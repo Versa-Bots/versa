@@ -3,8 +3,36 @@ name = "versa"
 version = "0.1.0"
 description = "Versa is a Discord user app (bot) aimed to provide helpful utility commands"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 dependencies = [
     "py-cord>=2.7.0",
     "python-dotenv>=1.2.1",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.0",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+
+[tool.ruff.lint]
+select = ["ALL"]
+extend-ignore = [
+    "COM812", # missing-trailing-comma conflicts with formatter
+    "D10", # missing docstrings is overkill
+    "T201" # print used # TODO: Switch to only using logging.*
+]
+pydocstyle.convention = "google"
