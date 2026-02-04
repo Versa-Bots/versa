@@ -11,6 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.37.4",
     "ruff>=0.15.0",
 ]
 
@@ -36,3 +37,13 @@ extend-ignore = [
     "T201" # print used # TODO: Switch to only using logging.*
 ]
 pydocstyle.convention = "google"
+
+[tool.basedpyright]
+include = ["src"]
+exclude = ["**/node_modules",
+    "**/__pycache__",
+    ".venv"
+]
+pythonVersion = "3.13"
+pythonPlatform = "any"
+typeCheckingMode = "basic"

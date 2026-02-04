@@ -15,7 +15,7 @@ class UserCommands(discord.Cog, name="user_commands"):
                 url=member.display_avatar.with_size(4096).url,
             )
         ]
-        if member.avatar != member.display_avatar:
+        if member.avatar and member.avatar != member.display_avatar:
             avatar_components.append(
                 discord.MediaGalleryItem(
                     url=member.avatar.with_size(4096).url,

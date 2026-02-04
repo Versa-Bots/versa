@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        check: [format, lint]
+        check: [format, lint, typecheck]
         include:
           - check: format
             name: "Format Check"
@@ -18,7 +18,9 @@ jobs:
           - check: lint
             name: "Lint Check"
             command: "uv run ruff check --output-format github ."
-
+          - check: typecheck
+            name: "Type Check"
+            command: "uv run basedpyright ."
     name: ${{ matrix.name }}
 
     steps:
