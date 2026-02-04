@@ -14,10 +14,10 @@ jobs:
         include:
           - check: format
             name: "Format Check"
-            command: "uv run ruff format --check ."
+            command: "uv run ruff format --output-format github --check ."
           - check: lint
             name: "Lint Check"
-            command: "uv run ruff check ."
+            command: "uv run ruff check --output-format github ."
 
     name: ${{ matrix.name }}
 
