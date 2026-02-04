@@ -1,9 +1,9 @@
 # versa
-Versa is a Discord user app (bot) aimed to provide helpful utility commands
+Versa is a Discord app (bot) aimed to provide helpful utility commands
 
 # What is this?
 
-Versa is a simple utility Discord bot, made to be used as a user app.
+Versa is a simple utility Discord bot, with the main goal of being open source and self-hosting friendly.
 
 # Self-Hosting
 
