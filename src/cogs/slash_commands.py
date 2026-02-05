@@ -18,10 +18,10 @@ class SlashCommands(discord.Cog, name="slash_commands"):
         choices=["jpeg", "png", "gif", "webp", "tiff", "bmp"],
     )
     async def convert(
-            self,
-            ctx: discord.ApplicationContext,
-            attachment: discord.Attachment,
-            target_filetype: str,
+        self,
+        ctx: discord.ApplicationContext,
+        attachment: discord.Attachment,
+        target_filetype: str,
     ) -> None:
         """Converts an image to another image format."""
         await ctx.defer(ephemeral=True)
