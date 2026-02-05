@@ -5,6 +5,7 @@ description = "Versa is a Discord user app (bot) aimed to provide helpful utilit
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "pillow>=12.1.0",
     "py-cord>=2.7.0",
     "python-dotenv>=1.2.1",
 ]
