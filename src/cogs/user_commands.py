@@ -3,7 +3,7 @@ from discord import user_command
 
 
 class UserCommands(discord.Cog, name="user_commands"):
-    def __init__(self, bot: discord.Bot):
+    def __init__(self, bot: discord.Bot) -> None:
         self.bot = bot
 
     @user_command()
@@ -15,7 +15,7 @@ class UserCommands(discord.Cog, name="user_commands"):
                 url=member.display_avatar.with_size(4096).url,
             )
         ]
-        if member.avatar != member.display_avatar:
+        if member.avatar and member.avatar != member.display_avatar:
             avatar_components.append(
                 discord.MediaGalleryItem(
                     url=member.avatar.with_size(4096).url,
@@ -23,11 +23,9 @@ class UserCommands(discord.Cog, name="user_commands"):
             )
 
         container = discord.ui.Container(
-            discord.ui.MediaGallery(
-                *avatar_components
-            ),
+            discord.ui.MediaGallery(*avatar_components),
             discord.ui.TextDisplay(content="-# Versa"),
-            color=user.accent_color
+            color=user.accent_color,
         )
 
         await ctx.respond(view=discord.ui.DesignerView(container), ephemeral=True)
@@ -40,7 +38,7 @@ class UserCommands(discord.Cog, name="user_commands"):
         if member.display_banner is None and user.banner is None:
             await ctx.respond("Member has no banner(s) set!", ephemeral=True)
             return
-        
+
         if member.display_banner is not None:
             banner_components.append(
                 discord.ui.MediaGallery(
@@ -60,13 +58,11 @@ class UserCommands(discord.Cog, name="user_commands"):
             )
 
         container = discord.ui.Container(
-            *banner_components,
-            discord.ui.TextDisplay(content="-# Versa"),
-            color=user.accent_color
+            *banner_components, discord.ui.TextDisplay(content="-# Versa"), color=user.accent_color
         )
 
         await ctx.respond(view=discord.ui.DesignerView(container), ephemeral=True)
 
 
-def setup(bot):
+def setup(bot: discord.Bot) -> None:
     bot.add_cog(UserCommands(bot))

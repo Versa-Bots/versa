@@ -1,0 +1,38 @@
+name: Quality Checks
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [format, lint, typecheck]
+        include:
+          - check: format
+            name: "Format Check"
+            command: "uv run ruff format --output-format github --check ."
+          - check: lint
+            name: "Lint Check"
+            command: "uv run ruff check --output-format github ."
+          - check: typecheck
+            name: "Type Check"
+            command: "uv run basedpyright ."
+    name: ${{ matrix.name }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: "auto"
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: ${{ matrix.name }}
+        run: ${{ matrix.command }}
