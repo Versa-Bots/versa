@@ -3,5 +3,10 @@
   "extends": ["config:recommended"],
   "separateMultipleMajor": true,
   "additionalBranchPrefix": "{{parentDir}}-",
-  "pinDigests": true
+  "pinDigests": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "semanticCommits": "enabled",
+  "addLabels": ["renovate", "dependencies"]
 }
