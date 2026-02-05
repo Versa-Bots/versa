@@ -50,5 +50,5 @@ exclude = ["**/node_modules",
     ".venv"
 ]
 pythonVersion = "3.13"
-pythonPlatform = "any"
+pythonPlatform = "All"
 typeCheckingMode = "basic"
