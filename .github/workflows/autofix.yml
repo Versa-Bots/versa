@@ -18,6 +18,9 @@ jobs:
         with:
           enable-cache: "auto"
 
+      - name: Sync dependencies
+        run: uv sync
+
       - name: Format code
         run: |
           set +e
