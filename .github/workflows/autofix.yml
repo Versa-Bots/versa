@@ -1,0 +1,33 @@
+name: autofix.ci
+
+on:
+  pull_request:
+  push:
+    branches: [ "main" ]
+permissions:
+  contents: read
+
+jobs:
+  autofix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@803947b9bd8e9f986429fa0c5a41c367cd732b41 # v7
+        with:
+          enable-cache: "auto"
+
+      - name: Format code
+        run: |
+          set +e
+          uv run ruff format .
+          set -e
+
+      - name: Lint code (fix)
+        run: |
+          set +e
+          uv run ruff check --fix .
+          set -e
+
+      - uses: autofix-ci/action@7a166d7532b277f34e16238930461bf77f9d7ed8 # v1.3.3
