@@ -1,12 +1,10 @@
 import asyncio
 import io
-import os
-import pathlib
 from pathlib import Path
 
 import discord
-from discord import option, slash_command
 from PIL import Image, UnidentifiedImageError
+from discord import option, slash_command
 
 MAX_IMAGE_FILESIZE = 50_000_000
 
@@ -23,10 +21,10 @@ class SlashCommands(discord.Cog, name="slash_commands"):
         choices=["jpeg", "png", "gif", "webp", "tiff", "bmp"],
     )
     async def convert(
-        self,
-        ctx: discord.ApplicationContext,
-        image: discord.Attachment,
-        target_filetype: str,
+            self,
+            ctx: discord.ApplicationContext,
+            image: discord.Attachment,
+            target_filetype: str,
     ) -> None:
         """Converts an image to another image format. Animated GIFs will be converted to static images."""
         if not image.content_type or not image.content_type.startswith("image/"):
