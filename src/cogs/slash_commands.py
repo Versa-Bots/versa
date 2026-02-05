@@ -1,3 +1,4 @@
+import asyncio
 import io
 from io import BytesIO
 
@@ -26,7 +27,9 @@ class SlashCommands(discord.Cog, name="slash_commands"):
         """Converts an image to another image format."""
         await ctx.defer(ephemeral=True)
         file_bytes = await attachment.read()
-        converted = self.convert_image(file_bytes, target_filetype)
+        converted = await asyncio.get_running_loop().run_in_executor(
+            None, self.convert_image, file_bytes, target_filetype
+        )
 
         await ctx.respond(
             file=discord.File(converted, filename=self.replace_extension(attachment.filename, target_filetype)),
@@ -56,9 +59,9 @@ class SlashCommands(discord.Cog, name="slash_commands"):
         file = io.BytesIO(image_bytes)
         image = Image.open(file)
 
-        image = (
-            image.convert("RGBA") if target_filetype in {"png", "webp", "jxl"} else image.convert("RGB")
-        )  # Cut alpha channel to support PNG / WebP -> X
+        if target_filetype not in {"png", "webp"} and image.mode == "RGBA":
+            image = image.convert("RGB")  # Cut alpha channel to support PNG / WebP -> X
+
         buffer = io.BytesIO()
         image.save(buffer, format=target_filetype)
         buffer.seek(0)
