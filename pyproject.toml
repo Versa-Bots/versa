@@ -38,7 +38,7 @@ extend-ignore = [
     "D10", # missing docstrings is overkill
     "T201" # print used # TODO: Switch to only using logging.*
 ]
-pydocstyle.convention = "google"
+pydocstyle.convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
 "src/cogs/*" = [

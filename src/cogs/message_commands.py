@@ -10,7 +10,6 @@ class MessageCommands(discord.Cog, name="message_commands"):
 
     @message_command()
     async def fxlink(self, ctx: discord.ApplicationContext, message: discord.Message) -> None:
-        """Makes certain site's links embed properly within Discord."""
         if not message.content:
             await ctx.respond("No link found!", ephemeral=True)
             return
