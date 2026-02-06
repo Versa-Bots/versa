@@ -6,7 +6,9 @@ import discord
 from discord import option, slash_command
 from PIL import Image, UnidentifiedImageError
 
-MAX_IMAGE_FILESIZE = 50_000_000
+MAX_IMAGE_FILESIZE = 50_000_000  # 50 MB
+SUPPORTED_IMAGE_FORMATS = {"jpeg", "png", "gif", "webp", "tiff", "bmp"}
+TRANSPARENT_FORMATS = {"png", "webp", "tiff"}
 
 
 class SlashCommands(discord.Cog, name="slash_commands"):
@@ -18,7 +20,7 @@ class SlashCommands(discord.Cog, name="slash_commands"):
     @option(
         "target_filetype",
         description="The filetype to convert to",
-        choices=["jpeg", "png", "gif", "webp", "tiff", "bmp"],
+        choices=SUPPORTED_IMAGE_FORMATS,
     )
     async def convert(
         self,
@@ -32,7 +34,7 @@ class SlashCommands(discord.Cog, name="slash_commands"):
             return
         if image.size > MAX_IMAGE_FILESIZE:
             await ctx.respond(
-                f"Attached file is too large! Keep it below {MAX_IMAGE_FILESIZE / 1_000_000}MB.", ephemeral=True
+                f"Attached file is too large! Keep it below {MAX_IMAGE_FILESIZE // 1_000_000}MB.", ephemeral=True
             )
             return
 
@@ -74,10 +76,10 @@ class SlashCommands(discord.Cog, name="slash_commands"):
         file = io.BytesIO(image_bytes)
         buffer = io.BytesIO()
         with Image.open(file) as image:
-            if target_filetype not in {"png", "webp", "tiff"} and image.mode == "RGBA":
+            if target_filetype not in TRANSPARENT_FORMATS and image.mode != "RGB":
                 image.convert("RGB").save(
                     buffer, format=target_filetype
-                )  # Cut alpha channel to support PNG / WebP -> X
+                )  # Cut the alpha channel to support PNG / WebP / TIFF -> X
             else:
                 image.save(buffer, format=target_filetype)
 
