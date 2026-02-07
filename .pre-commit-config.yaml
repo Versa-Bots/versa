@@ -1,11 +1,11 @@
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.0
+    rev: 0470f7c8a653e950f7cc5a653204ceb3fde4c02a  # v0.15.0
     hooks:
       - id: ruff-check
         args: [ --fix ]
       - id: ruff-format
   - repo: https://github.com/DetachHead/basedpyright-pre-commit-mirror
-    rev: 1.37.4
+    rev: 51249f052c7c288dcd0f7cc977557d96808c3455  # 1.37.4
     hooks:
       - id: basedpyright
