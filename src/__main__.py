@@ -3,7 +3,10 @@ import os
 import discord
 from dotenv import load_dotenv
 
-bot = discord.Bot(intents=discord.Intents.default())
+bot = discord.Bot(
+    intents=discord.Intents.default(),
+    default_command_integration_types={discord.IntegrationType.guild_install, discord.IntegrationType.user_install},
+)
 
 bot.load_extensions("src.cogs")
 print("Loaded cogs: " + ", ".join(bot.cogs))
