@@ -20,3 +20,10 @@ jobs:
       packages: write
       id-token: write
     uses: ./.github/workflows/docker.yml
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: docker
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
