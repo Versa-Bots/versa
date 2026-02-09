@@ -12,4 +12,21 @@ concurrency:
 
 jobs:
   quality:
+    permissions:
+      contents: read
     uses: ./.github/workflows/quality.yml
+  docker:
+    needs: quality
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    uses: ./.github/workflows/docker.yml
+  deploy:
+    permissions: {}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: docker
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}

@@ -1,0 +1,20 @@
+name: deploy.yml
+on:
+  workflow_call:
+    secrets:
+      COOLIFY_WEBHOOK:
+        required: true
+      COOLIFY_TOKEN:
+        required: true
+
+permissions: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: coolify
+    name: Deploy to Coolify
+    steps:
+    - name: Deploy
+      run: |
+       curl --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
