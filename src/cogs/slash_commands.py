@@ -1,9 +1,10 @@
 import asyncio
 import io
+import time
 from pathlib import Path
 
 import discord
-from discord import option, slash_command
+from discord import ClientUser, option, slash_command
 from PIL import Image, UnidentifiedImageError
 
 MAX_IMAGE_FILESIZE = 50_000_000  # 50 MB
@@ -14,6 +15,28 @@ TRANSPARENT_FORMATS = {"png", "webp", "tiff"}
 class SlashCommands(discord.Cog, name="slash_commands"):
     def __init__(self, bot: discord.Bot) -> None:
         self.bot = bot
+        self.started_time = time.time()
+
+    @slash_command()
+    async def info(self, ctx: discord.ApplicationContext) -> None:
+        """Display information about the bot."""
+        bot_user: ClientUser = self.bot.user  # pyright: ignore[reportAssignmentType] TODO Remove this
+        container = discord.ui.Container()
+        container.add_section(
+            discord.ui.TextDisplay(f"""
+{bot_user.name} is a bot developed by [Versa Bots](https://github.com/Versa-Bots/) offering utility commands.
+**Users:** {len(self.bot.users)}
+**Servers:** {len(self.bot.guilds)}
+**API Latency:** {round(self.bot.latency * 1000)}ms
+**Pycord Version:** {discord.__version__}
+**Uptime:** {self.format_uptime(time.time() - self.started_time)}
+**Code:** https://github.com/Versa-Bots/versa/"""),
+            accessory=discord.ui.Thumbnail(url=bot_user.display_avatar.url),
+        )
+        inv_button_row = discord.ui.ActionRow(
+            discord.ui.Button(label="Invite", url=f"https://discord.com/api/oauth2/authorize?client_id={bot_user.id}")
+        )
+        await ctx.respond(view=discord.ui.DesignerView(container, inv_button_row))
 
     @slash_command()
     @option("image", discord.Attachment, description="The image to convert")
@@ -85,6 +108,24 @@ class SlashCommands(discord.Cog, name="slash_commands"):
 
         buffer.seek(0)
         return buffer
+
+    @staticmethod
+    def format_uptime(seconds: float) -> str:
+        seconds = int(seconds)
+        days, seconds = divmod(seconds, 86400)
+        hours, seconds = divmod(seconds, 3600)
+        minutes, seconds = divmod(seconds, 60)
+
+        parts = []
+        if days:
+            parts.append(f"{days}d")
+        if hours:
+            parts.append(f"{hours}h")
+        if minutes:
+            parts.append(f"{minutes}m")
+        parts.append(f"{seconds}s")
+
+        return " ".join(parts)
 
 
 def setup(bot: discord.Bot) -> None:
