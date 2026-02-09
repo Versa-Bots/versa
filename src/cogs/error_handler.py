@@ -113,22 +113,7 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
         error_message: str = get_msg_for_exception_type(exception)
         await interaction.respond(error_message, ephemeral=True)
-
-    # Listener for text (prefix) commands
-    @discord.Cog.listener()
-    async def on_command_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        #
-        #
-        print(error)
-        # There is no default print for on_command_error, but I've added it here just to maintain the same
-        # event style when the bot encounters an error.
-        # https://docs.pycord.dev/en/v2.7.0/ext/commands/api.html#discord.discord.ext.commands.on_command_error
-        # Like above, this can be removed if the user does not want to print errors.
-
-        error_message: str = get_msg_for_exception_type(error)
-        await ctx.message.reply(error_message)
+        return
 
 
 def setup(bot: discord.Bot):
