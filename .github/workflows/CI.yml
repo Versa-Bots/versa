@@ -1,8 +1,7 @@
-name: CI/CD
+name: CI
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_call:
   pull_request:
     branches: [ "main" ]
 
@@ -22,11 +21,3 @@ jobs:
       packages: write
       id-token: write
     uses: ./.github/workflows/docker.yml
-  deploy:
-    permissions: {}
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: docker
-    uses: ./.github/workflows/deploy.yml
-    secrets:
-      COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
-      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
