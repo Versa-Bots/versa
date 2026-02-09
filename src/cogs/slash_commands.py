@@ -20,7 +20,8 @@ class SlashCommands(discord.Cog, name="slash_commands"):
     @slash_command()
     async def info(self, ctx: discord.ApplicationContext) -> None:
         """Display information about the bot."""
-        bot_user: ClientUser = self.bot.user  # pyright: ignore[reportAssignmentType] TODO Remove this
+        assert self.bot.user is not None
+        bot_user: ClientUser = self.bot.user
         container = discord.ui.Container()
         container.add_section(
             discord.ui.TextDisplay(f"""
