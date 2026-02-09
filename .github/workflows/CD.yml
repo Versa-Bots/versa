@@ -1,28 +1,21 @@
 name: CD
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: [ "CI" ]
+    types:
+      - completed
+    branches:
+      - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: deploy-${{ github.event.workflow_run.head_branch || 'main' }}
   cancel-in-progress: true
 
 jobs:
-  quality:
-    permissions:
-      contents: read
-    uses: ./.github/workflows/quality.yml
-  docker:
-    needs: quality
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-    uses: ./.github/workflows/docker.yml
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions: {}
-    needs: docker
     uses: ./.github/workflows/deploy.yml
     secrets:
       COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}

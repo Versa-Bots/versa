@@ -15,3 +15,10 @@ jobs:
     permissions:
       contents: read
     uses: ./.github/workflows/quality.yml
+  docker:
+    needs: quality
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    uses: ./.github/workflows/docker.yml
