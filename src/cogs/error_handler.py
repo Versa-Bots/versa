@@ -101,7 +101,9 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
     # Listner for application (slash) commands
     @discord.Cog.listener()
-    async def on_application_command_error(self, interaction: discord.Interaction, exception: Exception) -> None:
+    async def on_application_command_error(
+        self, interaction: discord.Interaction, exception: Exception
+    ) -> None:
         #
         #
         print(exception)
@@ -114,7 +116,9 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
     # Listener for text (prefix) commands
     @discord.Cog.listener()
-    async def on_command_error(self, ctx: commands.Context, error: commands.CommandError) -> None:
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ) -> None:
         #
         #
         print(error)
@@ -125,7 +129,6 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
         error_message: str = get_msg_for_exception_type(error)
         await ctx.message.reply(error_message)
-
 
 
 def setup(bot: discord.Bot):
