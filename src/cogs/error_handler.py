@@ -125,3 +125,8 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
         error_message: str = get_msg_for_exception_type(error)
         await ctx.message.reply(error_message)
+
+
+
+def setup(bot: discord.Bot):
+    bot.add_cog(ErrorHandler(bot))
