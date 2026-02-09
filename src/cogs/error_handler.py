@@ -12,11 +12,12 @@ Cog written by tobezdev:
     Website: https://tobezdev.com
 """
 
+import random
+import string
+
 import discord
 from discord import errors
 from discord.ext import commands
-
-import string, random
 
 
 def get_msg_for_exception_type(error) -> str:
@@ -101,11 +102,7 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
     # Listner for application (slash) commands
     @discord.Cog.listener()
-    async def on_application_command_error(
-        self, interaction: discord.Interaction, exception: Exception
-    ) -> None:
-        #
-        #
+    async def on_application_command_error(self, interaction: discord.Interaction, exception: Exception) -> None:
         print(exception)
         # This maintains the default implementation of printing to sys.stderr as specified on the docs here:
         # https://docs.pycord.dev/en/v2.7.0/api/clients.html#discord.Bot.on_application_command_error
@@ -113,7 +110,6 @@ class ErrorHandler(discord.Cog, name="error_handler"):
 
         error_message: str = get_msg_for_exception_type(exception)
         await interaction.respond(error_message, ephemeral=True)
-        return
 
 
 def setup(bot: discord.Bot):
