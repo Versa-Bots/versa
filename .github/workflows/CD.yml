@@ -1,0 +1,26 @@
+name: CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  CI:
+    uses: ./.github/workflows/CI.yml
+  deploy:
+    needs: CI
+    if: ${{ needs.CI.result == 'success' }}
+    permissions: {}
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+      COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
