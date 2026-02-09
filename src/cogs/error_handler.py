@@ -36,7 +36,10 @@ _ERROR_MESSAGES: tuple[tuple[type[BaseException], str], ...] = (
     (commands.CheckFailure, "You didn't pass a permission or condition check for this command."),
     (commands.CommandInvokeError, "An unexpected error occurred while running that command."),
     (discord.InteractionResponded, "This interaction has already been responded to."),
-    (discord.ApplicationCommandInvokeError, "Something went wrong while executing that application command.",),
+    (
+        discord.ApplicationCommandInvokeError,
+        "Something went wrong while executing that application command.",
+    ),
     (discord.CheckFailure, "You don't meet the requirements to run this interaction."),
     (discord.Forbidden, "I don't have permission to do that."),
     (discord.NotFound, "That resource couldn't be found."),
