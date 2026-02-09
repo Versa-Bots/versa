@@ -36,10 +36,7 @@ _ERROR_MESSAGES: tuple[tuple[type[BaseException], str], ...] = (
     (commands.CheckFailure, "You didn't pass a permission or condition check for this command."),
     (commands.CommandInvokeError, "An unexpected error occurred while running that command."),
     (discord.InteractionResponded, "This interaction has already been responded to."),
-    (
-        discord.ApplicationCommandInvokeError,
-        "Something went wrong while executing that application command.",
-    ),
+    (discord.ApplicationCommandInvokeError, "Something went wrong while executing that application command.",),
     (discord.CheckFailure, "You don't meet the requirements to run this interaction."),
     (discord.Forbidden, "I don't have permission to do that."),
     (discord.NotFound, "That resource couldn't be found."),
@@ -54,14 +51,14 @@ _ERROR_MESSAGES: tuple[tuple[type[BaseException], str], ...] = (
 )
 
 
-def genErrCode(length: int = 12) -> str:
+def generate_error_code(length: int = 12) -> str:
     alphabet = string.ascii_uppercase + string.ascii_lowercase + string.digits
     return "".join(secrets.choice(alphabet) for _ in range(length))
 
 
-def getErrMsg(error: Exception) -> str:
+def get_error_message(error: Exception) -> str:
     msg: str | None = None
-    errcode: str = genErrCode()
+    errcode: str = generate_error_code()
 
     for exc_type, exc_msg in _ERROR_MESSAGES:
         if isinstance(error, exc_type):
@@ -69,9 +66,14 @@ def getErrMsg(error: Exception) -> str:
             break
 
     if msg is None or not msg:
-        msg = f"An unknown `{error.__class__.__name__}` error occurred while processing this command."
+        msg = (
+            f"An unknown `{error.__class__.__name__}` error occurred while processing this command."
+        )
 
-    msg += f"\nIf this error persists, please contact a member of staff. Quote error code **`{errcode}`** when reporting this issue."
+    msg += (
+        "\nIf this error persists, please contact a member of staff. "
+        f"Quote error code **`{errcode}`** when reporting this issue."
+    )
     return msg
 
 
@@ -87,7 +89,7 @@ class ErrorHandler(discord.Cog, name="error_handler"):
         # https://docs.pycord.dev/en/v2.7.0/api/clients.html#discord.Bot.on_application_command_error
         # This can be removed if the user does not want to print errors and only wants to handle them in Discord.
 
-        error_message: str = getErrMsg(exception)
+        error_message: str = get_error_message(exception)
         await interaction.respond(error_message, ephemeral=True)
 
 
