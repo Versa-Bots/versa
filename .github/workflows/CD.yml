@@ -22,7 +22,6 @@ jobs:
     uses: ./.github/workflows/docker.yml
   deploy:
     permissions: {}
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: docker
     uses: ./.github/workflows/deploy.yml
     secrets:
