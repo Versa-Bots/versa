@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: deploy-${{ github.event.workflow_run.head_branch || 'main' }}
+  group: deploy-${{ github.ref_name || 'main' }}
   cancel-in-progress: true
 
 jobs:
