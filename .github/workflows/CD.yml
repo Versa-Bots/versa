@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: read
+  packages: write
+  id-token: write
 
 concurrency:
   group: deploy-${{ github.ref_name || 'main' }}
@@ -15,7 +17,8 @@ jobs:
   CI:
     uses: ./.github/workflows/CI.yml
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    needs: CI
+    if: ${{ needs.CI.result == 'success' }}
     permissions: {}
     uses: ./.github/workflows/deploy.yml
     secrets:
