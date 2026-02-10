@@ -21,7 +21,7 @@ class SlashCommands(discord.Cog, name="slash_commands"):
     async def info(self, ctx: discord.ApplicationContext) -> None:
         """Display information about the bot."""
         if self.bot.user is None:
-            return
+            raise TypeError("bot.user is None")
 
         container = discord.ui.Container()
         container.add_section(
