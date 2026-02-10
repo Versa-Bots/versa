@@ -7,6 +7,8 @@ import discord
 from discord import option, slash_command
 from PIL import Image, UnidentifiedImageError
 
+from src.exceptions import UnexpectedNoneError
+
 MAX_IMAGE_FILESIZE = 50_000_000  # 50 MB
 SUPPORTED_IMAGE_FORMATS = {"jpeg", "png", "gif", "webp", "tiff", "bmp"}
 TRANSPARENT_FORMATS = {"png", "webp", "tiff"}
@@ -21,7 +23,7 @@ class SlashCommands(discord.Cog, name="slash_commands"):
     async def info(self, ctx: discord.ApplicationContext) -> None:
         """Display information about the bot."""
         if self.bot.user is None:
-            raise TypeError("bot.user is None")
+            raise UnexpectedNoneError(self.bot, "user")
 
         container = discord.ui.Container()
         container.add_section(
