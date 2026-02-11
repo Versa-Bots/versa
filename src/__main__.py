@@ -1,7 +1,13 @@
+import logging
 import os
 
 import discord
 from dotenv import load_dotenv
+
+from src import log_setup
+
+log_setup.setup_logging(logging.INFO)
+logger = logging.getLogger(__name__)
 
 bot = discord.Bot(
     intents=discord.Intents.default(),
@@ -9,18 +15,18 @@ bot = discord.Bot(
 )
 
 bot.load_extensions("src.cogs")
-print("Loaded cogs: " + ", ".join(bot.cogs))
+logger.info("Loaded cogs: %s", ", ".join(bot.cogs))
 
 
 @bot.listen()
 async def on_connect() -> None:
-    print("Connected to Discord!")
+    logger.info("Connected to Discord!")
 
 
 @bot.listen()
 async def on_ready() -> None:
-    print(f"Logged in as {bot.user}")
-    print("------")
+    logger.info("Logged in as %s", bot.user)
+    logger.info("----------------------------")
 
 
 load_dotenv()
