@@ -36,7 +36,6 @@ select = ["ALL"]
 extend-ignore = [
     "COM812", # missing-trailing-comma conflicts with formatter
     "D10", # missing docstrings is overkill
-    "T201" # print used # TODO: Switch to only using logging.*
 ]
 pydocstyle.convention = "numpy"
 
