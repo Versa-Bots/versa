@@ -1,8 +1,6 @@
 import logging
 import sys
 
-logger = logging.getLogger(__name__)
-
 
 def setup_logging(log_level: int = logging.INFO) -> None:
     """
@@ -18,7 +16,7 @@ def setup_logging(log_level: int = logging.INFO) -> None:
     stdout_handler.setLevel(logging.DEBUG)
     stdout_handler.addFilter(lambda r: r.levelno < logging.WARNING)
 
-    # stderr: ERROR, CRITICAL
+    # stderr: WARNING, ERROR, CRITICAL
     stderr_handler = logging.StreamHandler(sys.stderr)
     stderr_handler.setLevel(logging.WARNING)
 
