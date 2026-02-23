@@ -1,10 +1,12 @@
+import asyncio
 import logging
-import os
 
 import discord
-from dotenv import load_dotenv
 
 from src import log_setup
+from src.database import init_db, shutdown_db
+
+from .config import TOKEN
 
 log_setup.setup_logging(logging.INFO)
 logger = logging.getLogger(__name__)
@@ -29,5 +31,14 @@ async def on_ready() -> None:
     logger.info("----------------------------")
 
 
-load_dotenv()
-bot.run(os.getenv("TOKEN"))
+async def start() -> None:
+    try:
+        await init_db()
+        async with bot:
+            await bot.start(TOKEN)
+    finally:
+        await shutdown_db()
+
+
+if __name__ == "__main__":
+    asyncio.run(start())
