@@ -27,14 +27,16 @@ class SlashCommands(discord.Cog, name="slash_commands"):
 
         container = discord.ui.Container()
         container.add_section(
-            discord.ui.TextDisplay(f"""
+            discord.ui.TextDisplay(
+                f"""
 {self.bot.user.name} is a bot developed by [Versa Bots](https://github.com/Versa-Bots/) offering utility commands.
 **Users:** {len(self.bot.users)}
 **Servers:** {len(self.bot.guilds)}
 **API Latency:** {round(self.bot.latency * 1000)}ms
 **Pycord Version:** {discord.__version__}
 **Uptime:** {self.format_uptime(time.time() - self.started_time)}
-**Code:** https://github.com/Versa-Bots/versa/"""),
+**Code:** https://github.com/Versa-Bots/versa/"""
+            ),
             accessory=discord.ui.Thumbnail(url=self.bot.user.display_avatar.url),
         )
         inv_button_row = discord.ui.ActionRow(
