@@ -1,4 +1,4 @@
-class UnexpectedNoneError(RuntimeError):
+class UnexpectedNoneError(TypeError):
     """
     Exception raised when an attribute of an object is unexpectedly None.
 
