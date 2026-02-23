@@ -26,11 +26,12 @@ class SlashCommands(discord.Cog, name="slash_commands"):
             raise UnexpectedNoneError(self.bot, "user")
 
         container = discord.ui.Container()
+        container.add_text(f"""
+{self.bot.user.name} is a bot developed by [Versa Bots](https://github.com/Versa-Bots/) offering utility commands.""")
+        container.add_separator()
         container.add_section(
             discord.ui.TextDisplay(
-                f"""
-{self.bot.user.name} is a bot developed by [Versa Bots](https://github.com/Versa-Bots/) offering utility commands.
-**Users:** {len(self.bot.users)}
+                f"""**Users:** {len(self.bot.users)}
 **Servers:** {len(self.bot.guilds)}
 **API Latency:** {round(self.bot.latency * 1000)}ms
 **Pycord Version:** {discord.__version__}
