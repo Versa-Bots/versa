@@ -37,14 +37,16 @@ async def start() -> None:
         await init_db()
         async with bot:
             await bot.start(TOKEN)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         original_exc = e
     finally:
         try:
             await shutdown_db()
         except Exception as e2:
             if original_exc:
-                raise ExceptionGroup("Multiple errors happened when starting the bot", [original_exc, e2])
+                msg = "Multiple errors happened when starting the bot"
+
+                raise ExceptionGroup(msg, [original_exc, e2]) from None
             raise
         if original_exc:
             raise original_exc
