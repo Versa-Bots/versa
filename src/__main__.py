@@ -32,12 +32,22 @@ async def on_ready() -> None:
 
 
 async def start() -> None:
+    original_exc = None
     try:
         await init_db()
         async with bot:
             await bot.start(TOKEN)
+    except Exception as e:
+        original_exc = e
     finally:
-        await shutdown_db()
+        try:
+            await shutdown_db()
+        except Exception as e2:
+            if original_exc:
+                raise ExceptionGroup("Multiple errors happened when starting the bot", [original_exc, e2])
+            raise
+        if original_exc:
+            raise original_exc
 
 
 if __name__ == "__main__":
