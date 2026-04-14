@@ -3,12 +3,10 @@ import logging
 
 import discord
 
+from config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT, TOKEN
 from src import log_setup
-from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT
 from src.database import init_db, shutdown_db
 from src.healthcheck import HealthcheckServer
-
-from .config import TOKEN
 
 log_setup.setup_logging(logging.INFO)
 logger = logging.getLogger(__name__)

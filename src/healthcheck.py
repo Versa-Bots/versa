@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import math
 from contextlib import suppress
 from typing import Any
 
@@ -11,6 +12,7 @@ from tortoise.exceptions import ConfigurationError, DBConnectionError, Operation
 logger = logging.getLogger(__name__)
 
 _REQUEST_TIMEOUT_SECONDS = 5
+_MAX_HEARTBEAT_LATENCY_SECONDS = 60
 
 
 class HealthcheckServer:
@@ -80,11 +82,13 @@ class HealthcheckServer:
         db_connected = await self._is_db_connected()
         discord_connected = self._is_discord_connected()
         discord_unrate_limited = self._is_discord_unrate_limited()
+        discord_heartbeat_ok = self._is_discord_heartbeat_healthy()
 
         checks = {
             "database_connected": db_connected,
             "discord_connected": discord_connected,
             "discord_no_global_ratelimit": discord_unrate_limited,
+            "discord_heartbeats_healthy": discord_heartbeat_ok,
         }
         healthy = all(checks.values())
         return (
@@ -107,18 +111,22 @@ class HealthcheckServer:
         return self.bot.is_ready() and not self.bot.is_closed()
 
     def _is_discord_unrate_limited(self) -> bool:
-        global_rate_limit_gate = getattr(self.bot.http, "_global_over", None)
-        if isinstance(global_rate_limit_gate, asyncio.Event):
-            return global_rate_limit_gate.is_set()
         return not self.bot.is_ws_ratelimited()
 
-    async def _consume_headers(self, reader: asyncio.StreamReader) -> None:
+    def _is_discord_heartbeat_healthy(self) -> bool:
+        latencies = self.bot.latencies if isinstance(self.bot, discord.AutoShardedClient) else [(0, self.bot.latency)]
+
+        return all(math.isfinite(latency) and latency <= _MAX_HEARTBEAT_LATENCY_SECONDS for _, latency in latencies)
+
+    @staticmethod
+    async def _consume_headers(reader: asyncio.StreamReader) -> None:
         while True:
             line = await asyncio.wait_for(reader.readline(), timeout=_REQUEST_TIMEOUT_SECONDS)
             if not line or line in {b"\r\n", b"\n"}:
                 return
 
-    def _build_response(self, status_code: int, body: dict[str, Any]) -> bytes:
+    @staticmethod
+    def _build_response(status_code: int, body: dict[str, Any]) -> bytes:
         status_text = {
             200: "OK",
             400: "Bad Request",
