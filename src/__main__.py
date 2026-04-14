@@ -52,8 +52,8 @@ async def start() -> None:
         healthcheck_stop_exc = None
         try:
             await healthcheck_server.stop()
-        except Exception as e3:  # noqa: BLE001
-            healthcheck_stop_exc = e3
+        except Exception as healthcheck_exc:  # noqa: BLE001
+            healthcheck_stop_exc = healthcheck_exc
 
         try:
             await shutdown_db()
