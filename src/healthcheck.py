@@ -1,3 +1,5 @@
+"""Minimal HTTP healthcheck server for deployment probes."""
+
 import asyncio
 import json
 import logging
@@ -16,6 +18,8 @@ _MAX_HEARTBEAT_LATENCY_SECONDS = 10
 
 
 class HealthcheckServer:
+    """Serve HTTP healthcheck responses for runtime dependency status."""
+
     def __init__(
         self,
         bot: discord.Bot,
@@ -24,6 +28,14 @@ class HealthcheckServer:
         port: int,
         path: str = "/",
     ) -> None:
+        """
+        Initialize the healthcheck server.
+
+        :param bot: Discord bot instance used for runtime status checks.
+        :param host: Interface address for the healthcheck listener.
+        :param port: TCP port for the healthcheck listener.
+        :param path: HTTP path that serves health responses.
+        """
         self.bot = bot
         self.host = host
         self.port = port
@@ -31,10 +43,12 @@ class HealthcheckServer:
         self._server: asyncio.AbstractServer | None = None
 
     async def start(self) -> None:
+        """Start listening for healthcheck HTTP requests."""
         self._server = await asyncio.start_server(self._handle_connection, host=self.host, port=self.port)
         logger.info("Healthcheck server listening on http://%s:%s%s", self.host, self.port, self.path)
 
     async def stop(self) -> None:
+        """Stop the healthcheck listener if it is running."""
         if self._server is None:
             return
 
@@ -43,6 +57,12 @@ class HealthcheckServer:
         self._server = None
 
     async def _handle_connection(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
+        """
+        Process a single HTTP request and return a JSON response.
+
+        :param reader: Stream reader for the client connection.
+        :param writer: Stream writer for the client connection.
+        """
         response_status = 500
         response_body: dict[str, Any] = {"status": "error"}
 
@@ -79,6 +99,7 @@ class HealthcheckServer:
                 await writer.wait_closed()
 
     async def _health_response(self) -> tuple[int, dict[str, Any]]:
+        """Build the current health payload and matching HTTP status code."""
         db_connected = await self._is_db_connected()
         discord_connected = self._is_discord_connected()
         discord_unrate_limited = self._is_discord_unrate_limited()
@@ -100,6 +121,7 @@ class HealthcheckServer:
         )
 
     async def _is_db_connected(self) -> bool:
+        """Return whether the configured database connection is responsive."""
         try:
             connection = Tortoise.get_connection("default")
             await connection.execute_query("SELECT 1")
@@ -108,12 +130,15 @@ class HealthcheckServer:
         return True
 
     def _is_discord_connected(self) -> bool:
+        """Return whether the Discord client is ready and not closed."""
         return self.bot.is_ready() and not self.bot.is_closed()
 
     def _is_discord_unrate_limited(self) -> bool:
+        """Return whether the Discord websocket is not globally ratelimited."""
         return not self.bot.is_ws_ratelimited()
 
     def _is_discord_heartbeat_healthy(self) -> bool:
+        """Return whether Discord heartbeat latencies are within the healthy threshold."""
         if isinstance(self.bot, discord.AutoShardedClient):
             return all(
                 math.isfinite(latency) and 0 <= latency <= _MAX_HEARTBEAT_LATENCY_SECONDS
@@ -124,6 +149,11 @@ class HealthcheckServer:
 
     @staticmethod
     async def _consume_headers(reader: asyncio.StreamReader) -> None:
+        """
+        Read request headers until an empty line is reached.
+
+        :param reader: Stream reader for the client connection.
+        """
         while True:
             line = await asyncio.wait_for(reader.readline(), timeout=_REQUEST_TIMEOUT_SECONDS)
             if not line or line in {b"\r\n", b"\n"}:
@@ -131,6 +161,13 @@ class HealthcheckServer:
 
     @staticmethod
     def _build_response(status_code: int, body: dict[str, Any]) -> bytes:
+        """
+        Build a raw HTTP JSON response payload.
+
+        :param status_code: HTTP status code to emit.
+        :param body: Response body content.
+        :returns: Serialized HTTP response bytes.
+        """
         status_text = {
             200: "OK",
             400: "Bad Request",
