@@ -4,7 +4,9 @@ import logging
 import discord
 
 from src import log_setup
+from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT
 from src.database import init_db, shutdown_db
+from src.healthcheck import HealthcheckServer
 
 from .config import TOKEN
 
@@ -33,13 +35,26 @@ async def on_ready() -> None:
 
 async def start() -> None:
     original_exc = None
+    healthcheck_server = HealthcheckServer(
+        bot,
+        host=HEALTHCHECK_HOST,
+        port=HEALTHCHECK_PORT,
+        path=HEALTHCHECK_PATH,
+    )
     try:
         await init_db()
+        await healthcheck_server.start()
         async with bot:
             await bot.start(TOKEN)
     except Exception as e:  # noqa: BLE001
         original_exc = e
     finally:
+        healthcheck_stop_exc = None
+        try:
+            await healthcheck_server.stop()
+        except Exception as e3:  # noqa: BLE001
+            healthcheck_stop_exc = e3
+
         try:
             await shutdown_db()
         except Exception as e2:
@@ -47,7 +62,17 @@ async def start() -> None:
                 msg = "Multiple errors happened when starting the bot"
 
                 raise ExceptionGroup(msg, [original_exc, e2]) from None
+            if healthcheck_stop_exc:
+                msg = "Multiple errors happened during shutdown"
+
+                raise ExceptionGroup(msg, [healthcheck_stop_exc, e2]) from None
             raise
+        if healthcheck_stop_exc:
+            if original_exc:
+                msg = "Multiple errors happened when starting the bot"
+
+                raise ExceptionGroup(msg, [original_exc, healthcheck_stop_exc]) from None
+            raise healthcheck_stop_exc
         if original_exc:
             raise original_exc
 

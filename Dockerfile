@@ -28,4 +28,6 @@ RUN pip install -r requirements.txt
 COPY src/ ./src
 USER appuser
 
+EXPOSE 8080
+
 CMD ["python", "-m", "src"]
