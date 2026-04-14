@@ -3,12 +3,8 @@ import logging
 
 import discord
 
-try:
-    from config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT, TOKEN
-except ImportError:  # pragma: no cover - runtime import fallback
-    from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT, TOKEN
-
 from src import log_setup
+from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT, TOKEN
 from src.database import init_db, shutdown_db
 from src.healthcheck import HealthcheckServer
 
