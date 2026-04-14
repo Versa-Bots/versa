@@ -114,9 +114,13 @@ class HealthcheckServer:
         return not self.bot.is_ws_ratelimited()
 
     def _is_discord_heartbeat_healthy(self) -> bool:
-        latencies = self.bot.latencies if isinstance(self.bot, discord.AutoShardedClient) else [(0, self.bot.latency)]
+        if isinstance(self.bot, discord.AutoShardedClient):
+            return all(
+                math.isfinite(latency) and 0 <= latency <= _MAX_HEARTBEAT_LATENCY_SECONDS
+                for _, latency in self.bot.latencies
+            )
 
-        return all(math.isfinite(latency) and latency <= _MAX_HEARTBEAT_LATENCY_SECONDS for _, latency in latencies)
+        return math.isfinite(self.bot.latency) and 0 <= self.bot.latency <= _MAX_HEARTBEAT_LATENCY_SECONDS
 
     @staticmethod
     async def _consume_headers(reader: asyncio.StreamReader) -> None:
