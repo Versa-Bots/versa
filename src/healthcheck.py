@@ -1,4 +1,4 @@
-"""HTTP healthcheck server for DB and Discord readiness, rate-limit, and heartbeat probes."""
+"""HTTP healthcheck server for DB and Discord readiness, ratelimit, and heartbeat probes."""
 
 import asyncio
 import json
