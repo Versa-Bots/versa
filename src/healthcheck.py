@@ -12,7 +12,7 @@ from tortoise.exceptions import ConfigurationError, DBConnectionError, Operation
 logger = logging.getLogger(__name__)
 
 _REQUEST_TIMEOUT_SECONDS = 5
-_MAX_HEARTBEAT_LATENCY_SECONDS = 60
+_MAX_HEARTBEAT_LATENCY_SECONDS = 10
 
 
 class HealthcheckServer:
