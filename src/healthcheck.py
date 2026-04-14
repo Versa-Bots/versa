@@ -1,4 +1,4 @@
-"""Minimal HTTP healthcheck server for deployment probes."""
+"""HTTP healthcheck server for DB and Discord readiness, rate-limit, and heartbeat probes."""
 
 import asyncio
 import json
