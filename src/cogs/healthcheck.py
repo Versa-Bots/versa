@@ -6,9 +6,10 @@ from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT
 from src.healthcheck import HealthcheckServer
 
 logger = logging.getLogger(__name__)
+HEALTHCHECK_COG_NAME = "healthcheck"
 
 
-class HealthcheckCog(discord.Cog, name="healthcheck"):
+class HealthcheckCog(discord.Cog, name=HEALTHCHECK_COG_NAME):
     def __init__(self, bot: discord.Bot) -> None:
         self.bot: discord.Bot = bot
         self.healthcheck_server: HealthcheckServer = HealthcheckServer(

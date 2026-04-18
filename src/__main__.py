@@ -4,7 +4,7 @@ import logging
 import discord
 
 from src import log_setup
-from src.cogs.healthcheck import HealthcheckCog
+from src.cogs.healthcheck import HEALTHCHECK_COG_NAME, HealthcheckCog
 from src.config import TOKEN
 from src.database import init_db, shutdown_db
 
@@ -41,7 +41,7 @@ async def start() -> None:
         original_exc = e
     finally:
         healthcheck_stop_exc = None
-        healthcheck_cog = bot.get_cog("healthcheck")
+        healthcheck_cog = bot.get_cog(HEALTHCHECK_COG_NAME)
         try:
             if isinstance(healthcheck_cog, HealthcheckCog):
                 await healthcheck_cog.stop_server()
