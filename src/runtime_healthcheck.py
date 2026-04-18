@@ -1,4 +1,4 @@
-"""HTTP healthcheck server for DB and Discord readiness, ratelimit, and heartbeat probes."""
+"""Runtime HTTP healthcheck server for DB and Discord readiness probes."""
 
 import asyncio
 import json
@@ -26,7 +26,7 @@ class HealthcheckServer:
         *,
         host: str,
         port: int,
-        path: str = "/",
+        path: str = "/health",
     ) -> None:
         """
         Initialize the healthcheck server.

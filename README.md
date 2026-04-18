@@ -20,12 +20,11 @@ Versa is a simple utility Discord bot, with the main goal of being open source a
 
 The bot exposes an HTTP healthcheck endpoint for deployment platforms (such as Coolify).
 
-- Method/path: `GET /` (configurable via `HEALTHCHECK_PATH`)
+- Method/path: `GET /health`
 - Default bind: `127.0.0.1:8080`
 - Config via env vars:
   - `HEALTHCHECK_HOST`
   - `HEALTHCHECK_PORT`
-  - `HEALTHCHECK_PATH`
 
 The endpoint returns:
 - `200` when DB is responsive, Discord is connected, Discord shard heartbeat latency is healthy, and no global Discord rate-limit is active

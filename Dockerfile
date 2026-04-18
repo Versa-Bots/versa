@@ -3,6 +3,8 @@ FROM python:${PYTHON_VERSION}-slim-bookworm AS python-base
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV HEALTHCHECK_HOST=127.0.0.1
+ENV HEALTHCHECK_PORT=8080
 
 RUN pip install uv
 
@@ -32,6 +34,6 @@ USER appuser
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["sh", "-c", "path=\"${HEALTHCHECK_PATH:-/}\"; case \"$path\" in /*) ;; *) path=\"/$path\" ;; esac; wget -q -T 3 -O /dev/null \"http://${HEALTHCHECK_HOST:-127.0.0.1}:${HEALTHCHECK_PORT:-8080}${path}\""]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["sh", "-c", "wget -q -T 3 -O /dev/null \"http://${HEALTHCHECK_HOST}:${HEALTHCHECK_PORT}/health\""]
 
 CMD ["python", "-m", "src"]
