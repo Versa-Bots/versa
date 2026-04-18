@@ -19,6 +19,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
+
 RUN adduser -u 8192 --disabled-password --gecos "" appuser && chown -R appuser /app
 
 COPY --from=python-base --chown=appuser /app/requirements.txt ./
@@ -30,6 +32,6 @@ USER appuser
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["python", "-c", "import os, sys, urllib.request; host = os.getenv('HEALTHCHECK_HOST', '127.0.0.1'); port = os.getenv('HEALTHCHECK_PORT', '8080'); path = os.getenv('HEALTHCHECK_PATH', '/'); path = path if path.startswith('/') else '/' + path; url = f'http://{host}:{port}{path}'; sys.exit(0 if urllib.request.urlopen(url, timeout=3).status == 200 else 1)"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD ["sh", "-c", "path=\"${HEALTHCHECK_PATH:-/}\"; case \"$path\" in /*) ;; *) path=\"/$path\" ;; esac; wget -q -T 3 -O /dev/null \"http://${HEALTHCHECK_HOST:-127.0.0.1}:${HEALTHCHECK_PORT:-8080}${path}\""]
 
 CMD ["python", "-m", "src"]
