@@ -36,10 +36,10 @@ class HealthcheckServer:
         :param port: TCP port for the healthcheck listener.
         :param path: HTTP path that serves health responses.
         """
-        self.bot = bot
-        self.host = host
-        self.port = port
-        self.path = path
+        self.bot: discord.Bot = bot
+        self.host: str = host
+        self.port: int = port
+        self.path: str = path
         self._server: asyncio.AbstractServer | None = None
 
     async def start(self) -> None:

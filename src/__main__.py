@@ -4,9 +4,9 @@ import logging
 import discord
 
 from src import log_setup
-from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PATH, HEALTHCHECK_PORT, TOKEN
+from src.cogs.healthcheck import HealthcheckCog
+from src.config import TOKEN
 from src.database import init_db, shutdown_db
-from src.healthcheck import HealthcheckServer
 
 log_setup.setup_logging(logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,23 +33,18 @@ async def on_ready() -> None:
 
 async def start() -> None:
     original_exc = None
-    healthcheck_server = HealthcheckServer(
-        bot,
-        host=HEALTHCHECK_HOST,
-        port=HEALTHCHECK_PORT,
-        path=HEALTHCHECK_PATH,
-    )
     try:
         await init_db()
-        await healthcheck_server.start()
         async with bot:
             await bot.start(TOKEN)
     except Exception as e:  # noqa: BLE001
         original_exc = e
     finally:
         healthcheck_stop_exc = None
+        healthcheck_cog = bot.get_cog("healthcheck")
         try:
-            await healthcheck_server.stop()
+            if isinstance(healthcheck_cog, HealthcheckCog):
+                await healthcheck_cog.stop_server()
         except Exception as healthcheck_exc:  # noqa: BLE001
             healthcheck_stop_exc = healthcheck_exc
 
