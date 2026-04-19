@@ -2,7 +2,7 @@ import logging
 
 import discord
 
-from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PORT
+from src.config import HEALTHCHECK_HOST, HEALTHCHECK_PORT_RAW
 from src.runtime_healthcheck import HealthcheckServer
 
 logger = logging.getLogger(__name__)
@@ -14,17 +14,28 @@ class HealthcheckCog(discord.Cog, name=HEALTHCHECK_COG_NAME):
         self.bot: discord.Bot = bot
         self.healthcheck_server: HealthcheckServer | None = None
         if HEALTHCHECK_HOST:
-            if HEALTHCHECK_PORT is None:
+            if HEALTHCHECK_PORT_RAW is None:
                 msg = (
-                    "Environment variable HEALTHCHECK_PORT must be set when HEALTHCHECK_HOST is configured "
-                    f"(current value: {HEALTHCHECK_HOST})"
+                    "Environment variable HEALTHCHECK_PORT must be set to a valid integer when "
+                    "HEALTHCHECK_HOST is configured "
+                    f"(HEALTHCHECK_HOST={HEALTHCHECK_HOST}, HEALTHCHECK_PORT={HEALTHCHECK_PORT_RAW})"
                 )
                 raise RuntimeError(msg)
+
+            try:
+                healthcheck_port = int(HEALTHCHECK_PORT_RAW)
+            except ValueError as e:
+                msg = (
+                    "Environment variable HEALTHCHECK_PORT must be set to a valid integer when "
+                    "HEALTHCHECK_HOST is configured "
+                    f"(HEALTHCHECK_HOST={HEALTHCHECK_HOST}, HEALTHCHECK_PORT={HEALTHCHECK_PORT_RAW})"
+                )
+                raise RuntimeError(msg) from e
 
             self.healthcheck_server = HealthcheckServer(
                 bot,
                 host=HEALTHCHECK_HOST,
-                port=HEALTHCHECK_PORT,
+                port=healthcheck_port,
             )
 
     @discord.Cog.listener(once=True)
