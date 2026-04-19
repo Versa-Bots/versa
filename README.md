@@ -25,7 +25,7 @@ The bot exposes an HTTP healthcheck endpoint for deployment platforms (such as C
 - Config via env vars:
   - `HEALTHCHECK_HOST`
   - `HEALTHCHECK_PORT`
-  - Leave `HEALTHCHECK_HOST` unset/empty to disable the healthcheck server
+  - Leave `HEALTHCHECK_HOST` unset or set to an empty string to disable the healthcheck server
 
 The endpoint returns:
 - `200` when DB is responsive, Discord is connected, Discord shard heartbeat latency is healthy, and no global Discord rate-limit is active

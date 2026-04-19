@@ -21,7 +21,7 @@ class HealthcheckCog(discord.Cog, name=HEALTHCHECK_COG_NAME):
             self.healthcheck_server = HealthcheckServer(
                 bot,
                 host=HEALTHCHECK_HOST,
-                port=int(HEALTHCHECK_PORT),
+                port=HEALTHCHECK_PORT,
             )
 
     @discord.Cog.listener(once=True)
