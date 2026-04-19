@@ -15,7 +15,10 @@ class HealthcheckCog(discord.Cog, name=HEALTHCHECK_COG_NAME):
         self.healthcheck_server: HealthcheckServer | None = None
         if HEALTHCHECK_HOST:
             if HEALTHCHECK_PORT is None:
-                msg = "Environment variable HEALTHCHECK_PORT must be set when HEALTHCHECK_HOST is configured"
+                msg = (
+                    "Environment variable HEALTHCHECK_PORT must be set when HEALTHCHECK_HOST is configured "
+                    f"(current value: {HEALTHCHECK_HOST})"
+                )
                 raise RuntimeError(msg)
 
             self.healthcheck_server = HealthcheckServer(
