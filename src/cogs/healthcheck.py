@@ -14,18 +14,22 @@ class HealthcheckCog(discord.Cog, name=HEALTHCHECK_COG_NAME):
         self.bot: discord.Bot = bot
         self.healthcheck_server: HealthcheckServer | None = None
         if HEALTHCHECK_HOST:
-            port_error_msg = (
-                "Environment variable HEALTHCHECK_PORT must be set to a valid integer when "
-                "HEALTHCHECK_HOST is configured "
-                f"(HEALTHCHECK_HOST={HEALTHCHECK_HOST}, HEALTHCHECK_PORT={HEALTHCHECK_PORT_RAW})"
-            )
             if HEALTHCHECK_PORT_RAW is None:
-                raise RuntimeError(port_error_msg)
+                msg = (
+                    "Environment variable HEALTHCHECK_PORT must be set when "
+                    f"HEALTHCHECK_HOST is configured (HEALTHCHECK_HOST={HEALTHCHECK_HOST})"
+                )
+                raise RuntimeError(msg)
 
             try:
                 healthcheck_port = int(HEALTHCHECK_PORT_RAW)
             except ValueError as e:
-                raise RuntimeError(port_error_msg) from e
+                msg = (
+                    "Environment variable HEALTHCHECK_PORT must be a valid integer when "
+                    "HEALTHCHECK_HOST is configured "
+                    f"(HEALTHCHECK_HOST={HEALTHCHECK_HOST}, HEALTHCHECK_PORT={HEALTHCHECK_PORT_RAW})"
+                )
+                raise RuntimeError(msg) from e
 
             self.healthcheck_server = HealthcheckServer(
                 bot,
