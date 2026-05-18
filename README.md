@@ -16,6 +16,21 @@ Versa is a simple utility Discord bot, with the main goal of being open source a
 
 #### ⚠ **Further support with self-hosting will not be provided.** ⚠
 
+### Healthcheck endpoint
+
+The bot exposes an HTTP healthcheck endpoint for deployment platforms (such as Coolify).
+
+- Method/path: `GET /health`
+- Docker default bind: `127.0.0.1:8080` (set via `ENV` in `Dockerfile`)
+- Config via env vars:
+  - `HEALTHCHECK_HOST`
+  - `HEALTHCHECK_PORT`
+  - Leave `HEALTHCHECK_HOST` unset or set to an empty string to disable the healthcheck server
+
+The endpoint returns:
+- `200` when DB is responsive, Discord is connected, Discord shard heartbeat latency is healthy, and no global Discord rate-limit is active
+- `503` when any check is failing
+
 # License
 
 This project is licensed under AGPL-3.0. Forks and redistributions must remain open-source. See the LICENSE file for
