@@ -4,9 +4,8 @@ import logging
 import discord
 
 from src import log_setup
+from src.config import TOKEN
 from src.database import init_db, shutdown_db
-
-from .config import TOKEN
 
 log_setup.setup_logging(logging.INFO)
 logger = logging.getLogger(__name__)
