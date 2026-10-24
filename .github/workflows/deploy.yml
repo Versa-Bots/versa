@@ -15,6 +15,10 @@ jobs:
     environment: coolify
     name: Deploy to Coolify
     steps:
-    - name: Deploy
-      run: |
-       curl --fail-with-body --request GET '${{ secrets.COOLIFY_WEBHOOK }}' --header 'Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}'
+      - name: Deploy
+        env:
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+        run: |
+          curl --fail-with-body --request POST "$COOLIFY_WEBHOOK" \
+            --header "Authorization: Bearer $COOLIFY_TOKEN"
