@@ -39,6 +39,7 @@ select = ["ALL"]
 extend-ignore = [
     "COM812", # missing-trailing-comma conflicts with formatter
     "D10", # missing docstrings is overkill
+    "CPY001",# we are not that professional yet
 ]
 pydocstyle.convention = "pep257"
 
